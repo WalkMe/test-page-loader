@@ -22,6 +22,7 @@ module PageLoader {
 			this.fixtures = jasmine.getFixtures();
 			this.fixturePrefix = fixturePrefix || 'base/';
 			this.pagesUrlPrefix = this.getHost() + this.fixturePrefix;
+			this.elementsForRemove = [];
 		}
 
 		loadPage(name: string) {
@@ -31,7 +32,10 @@ module PageLoader {
 		}
 
 		destroyPage() {
-			$('body').find('[data-page-name]').remove();
+            for (var i = 0; i < this.elementsForRemove.length; i++) {
+                $(this.elementsForRemove[i]).remove();
+            }
+            this.elementsForRemove = [];
 		}
 
 		loaded(callback: ()=>any) {
@@ -52,6 +56,7 @@ module PageLoader {
 
 			elements.each(function(i, e) {		
 				_this.incIframeCount();
+                _this.elementsForRemove.unshift(e);
 				var jElement = $(e);			
 				var name = jElement.attr('data-page-name');
 				jElement.load(_this.makeCallback());

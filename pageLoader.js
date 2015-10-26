@@ -13,6 +13,7 @@ var PageLoader;
             this.fixtures = jasmine.getFixtures();
             this.fixturePrefix = fixturePrefix || 'base/';
             this.pagesUrlPrefix = this.getHost() + this.fixturePrefix;
+            this.elementsForRemove = [];
         }
         PageLoader.prototype.loadPage = function (name) {
             this.fixtures.fixturesPath = this.fixturePrefix;
@@ -20,7 +21,10 @@ var PageLoader;
             this.fixIframeSource();
         };
         PageLoader.prototype.destroyPage = function () {
-            PageLoader_1.$('body').find('[data-page-name]').remove();
+            for (var i = 0; i < this.elementsForRemove.length; i++) {
+                PageLoader_1.$(this.elementsForRemove[i]).remove();
+            }
+            this.elementsForRemove = [];
         };
         PageLoader.prototype.loaded = function (callback) {
             this.callbacks.push(callback);
@@ -34,6 +38,7 @@ var PageLoader;
             var elements = parent.find('[data-page-name]');
             elements.each(function (i, e) {
                 _this.incIframeCount();
+                _this.elementsForRemove.unshift(e);
                 var jElement = PageLoader_1.$(e);
                 var name = jElement.attr('data-page-name');
                 jElement.load(_this.makeCallback());
