@@ -1,14 +1,12 @@
 ///<reference path="../player/lib/common/jquery.d.ts"/>
 ///<reference path="jasmine.d.ts"/>
 var PageLoader;
-(function (_PageLoader) {
-    _PageLoader.$;
-    _PageLoader.$$;
+(function (PageLoader_1) {
     function setJQuery(externalJQuery) {
-        _PageLoader.$ = externalJQuery;
-        _PageLoader.$$ = externalJQuery;
+        PageLoader_1.$ = externalJQuery;
+        PageLoader_1.$$ = externalJQuery;
     }
-    _PageLoader.setJQuery = setJQuery;
+    PageLoader_1.setJQuery = setJQuery;
     var PageLoader = (function () {
         function PageLoader(fixturePrefix) {
             this.callbacks = [];
@@ -21,21 +19,22 @@ var PageLoader;
             this.fixtures.load(name);
             this.fixIframeSource();
         };
+        PageLoader.prototype.destroyPage = function () {
+            PageLoader_1.$('body').find('[data-page-name]').remove();
+        };
         PageLoader.prototype.loaded = function (callback) {
             this.callbacks.push(callback);
         };
         PageLoader.prototype.fixIframeSource = function () {
-            // Think of the main page as the first iframe
             this.iframeCounter = 1;
-            // TODO: add support for frameset
-            this.fixIframeSourceRecursive(_PageLoader.$('body'));
+            this.fixIframeSourceRecursive(PageLoader_1.$('body'));
         };
         PageLoader.prototype.fixIframeSourceRecursive = function (parent) {
             var _this = this;
             var elements = parent.find('[data-page-name]');
             elements.each(function (i, e) {
                 _this.incIframeCount();
-                var jElement = _PageLoader.$(e);
+                var jElement = PageLoader_1.$(e);
                 var name = jElement.attr('data-page-name');
                 jElement.load(_this.makeCallback());
                 var path = _this.getAbsoluteUrl(name);
@@ -46,7 +45,7 @@ var PageLoader;
         PageLoader.prototype.makeCallback = function () {
             var _this = this;
             return function (e) {
-                var frame = _PageLoader.$(e.target);
+                var frame = PageLoader_1.$(e.target);
                 var contents = frame.contents();
                 _this.fixIframeSourceRecursive(contents);
             };
@@ -70,11 +69,12 @@ var PageLoader;
             this.iframeCounter++;
         };
         PageLoader.prototype.raiseLoadFinished = function () {
-            _PageLoader.$.each(this.callbacks, function (i, cb) {
+            PageLoader_1.$.each(this.callbacks, function (i, cb) {
                 cb();
             });
         };
         return PageLoader;
     })();
-    _PageLoader.PageLoader = PageLoader;
+    PageLoader_1.PageLoader = PageLoader;
 })(PageLoader || (PageLoader = {}));
+//# sourceMappingURL=pageLoader.js.map

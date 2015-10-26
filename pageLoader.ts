@@ -30,6 +30,10 @@ module PageLoader {
 		    this.fixIframeSource();
 		}
 
+		destroyPage() {
+			$('body').find('[data-page-name]').remove();
+		}
+
 		loaded(callback: ()=>any) {
 			this.callbacks.push(callback);
 		}
